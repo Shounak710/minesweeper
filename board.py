@@ -33,20 +33,17 @@ class Board:
     return grid_dim, int(mine_proportion * grid_dim[0] * grid_dim[1])
 
   def _plant_mines(self):
-    count = 0
-    
-    while count < self.num_mines:
-      x = random.randint(0, self.horlen-1)
-      y = random.randint(0, self.verlen-1)
+    indices = np.random.choice(self.horlen * self.verlen, self.num_mines, replace = False)
 
-      if self.grid[x][y] == 0:
-        self.grid[x][y] = Board.MINE_CHAR
-        count += 1
+    for idx in indices:
+      x, y = divmod(idx, self.verlen)
+      self.grid[x, y] = Board.MINE_CHAR
 
-        self._update_adjacent_counts(x, y)
+      self._update_adjacent_counts(x, y)
 
   def _update_adjacent_counts(self, x, y):
     for x_c in [x-1, x, x+1]:
       for y_c in [y-1, y, y+1]:
-        if (0 <= x_c <= self.horlen-1) and (0 <= y_c <= self.verlen-1) and (self.grid[x_c][y_c] != Board.MINE_CHAR):
-          self.grid[x_c][y_c] += 1
+        if (0 <= x_c < self.horlen) and (0 <= y_c < self.verlen) and (x_c != x or y_c != y):
+          if self.grid[x_c][y_c] != Board.MINE_CHAR:
+            self.grid[x_c][y_c] += 1

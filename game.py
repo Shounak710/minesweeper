@@ -16,15 +16,21 @@ class Game():
     print(' ')
 
   def restart(self):
+    print('setting up board')
     self.board = Board(mode=self.mode)
     self.game_active = True
     self.won = False
 
+    print('cell status reached')
     self.cell_status = {}
+
+    print('cell status setup')
     self._set_cell_statuses()
+    print('status done')
 
     self.num_hidden = self.board.horlen * self.board.verlen
 
+    print('displaying grid')
     self.display_grid()
 
   def play(self):
@@ -45,9 +51,7 @@ class Game():
       print("Game won !")
       
   def reveal(self, x, y):
-    print(self.board.horlen, self.board.verlen, x, y)
-    print(self.cell_status)
-    if self.cell_status[(x, y)] == 'mine':
+    if self.cell_status[(int(x), int(y))] == 'mine':
       self.game_active = False
 
       for pos in self.cell_status:
@@ -59,11 +63,11 @@ class Game():
 
       print('You trod on a mine, and now the game is mine ! <:()')
   
-    elif self.cell_status[(x, y)] == 'hidden':
-      self.cell_status[(x, y)] == 'open'
+    elif self.cell_status[(int(x), int(y))] == 'hidden':
+      self.cell_status[(int(x), int(y))] == 'open'
       self.num_hidden -= 1
-      
-      if self.board.grid[x][y] == 0:
+
+      if self.board.grid[x, y] == 0:
         self.handle_blank_case(x, y)
 
       self.display_grid()

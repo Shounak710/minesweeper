@@ -29,7 +29,7 @@ class MinesweeperEnv(gym.Env):
     return [seed]
   
   def reset(self, seed=None, options=None):
-    print('resetting...')
+    print(f'resetting {random.randint(1000, 110000000)}...')
 
     self.game.restart()
     self.done = False
@@ -39,13 +39,16 @@ class MinesweeperEnv(gym.Env):
   def step(self, action):
     print('Taking a step with action: {action}')
     if self.done:
-      return self.get_observation(), 0, self.done, {}
+      return self.get_observation(), 0, self.done, False, {}
 
-    x, y = divmod(action, self.board.horlen)
+    x, y = divmod(action[0], self.board.horlen)
 
     if x >= self.board.horlen or y >= self.board.verlen:
       print(f"Invalid action: x={x}, y={y}")
-      return self.get_observation(), -1, self.done, {}
+      return self.get_observation(), -1, self.done, False, {}
+    
+    if self.game.cell_status[(int(x), int(y))] == 'open':
+      return self.get_observation(), 0, self.done, False, {}
 
     self.game.reveal(x, y)
 
@@ -59,7 +62,7 @@ class MinesweeperEnv(gym.Env):
     else:
       reward = 1
 
-    return self.get_observation(), reward, self.done, {}
+    return self.get_observation(), reward, self.done, False, {}
 
   def get_observation(self):
     flat_grid = np.array(self.game.board.grid).flatten()
