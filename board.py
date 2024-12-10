@@ -7,6 +7,9 @@ class Board:
   def __init__(self, mode='easy'):
     self.mode = mode
 
+    self.reset_board()
+
+  def reset_board(self):
     (self.horlen, self.verlen), self.num_mines = self._get_grid_counts()
     self.grid = np.zeros((self.horlen, self.verlen), dtype=int)
 
@@ -23,7 +26,7 @@ class Board:
       grid_dim = (15, 14)
       mine_proportion = 0.2
     else:
-      dim = random.choice(6, 8, 10, 11, 13, 15, 18)
+      dim = random.choice([6, 8, 10, 11, 13, 15, 18])
       grid_dim = (dim, dim)
       mine_proportion = random.uniform(0.1, 0.2)
 
